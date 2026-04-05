@@ -21,23 +21,23 @@
     <button class="interp-toggle-global" id="interp-toggle" title="Toggle expert interpretations">Expert Commentary</button>
 </header>
 
-<nav class="tab-nav" role="tablist">
-    <button class="tab-btn active" data-tab="overview">Overview</button>
-    <button class="tab-btn" data-tab="dimensions">Dimensions</button>
-    <button class="tab-btn" data-tab="gaps">Gap Analysis</button>
-    <button class="tab-btn" data-tab="comparative">Comparative</button>
-    <button class="tab-btn" data-tab="drilldown">Statements</button>
-    <button class="tab-btn" data-tab="crosssystem">Cross-System</button>
-    <button class="tab-btn" data-tab="validation">Validation</button>
-    <button class="tab-btn" data-tab="agestage">Age-Stage</button>
-    <button class="tab-btn" data-tab="riskgov">Risk-Governance</button>
+<nav class="tab-nav" role="tablist" aria-label="Dashboard tabs">
+    <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true" aria-controls="pane-overview" id="tab-overview">Overview</button>
+    <button class="tab-btn" data-tab="dimensions" role="tab" aria-selected="false" aria-controls="pane-dimensions" id="tab-dimensions">Dimensions</button>
+    <button class="tab-btn" data-tab="gaps" role="tab" aria-selected="false" aria-controls="pane-gaps" id="tab-gaps">Gap Analysis</button>
+    <button class="tab-btn" data-tab="comparative" role="tab" aria-selected="false" aria-controls="pane-comparative" id="tab-comparative">Comparative</button>
+    <button class="tab-btn" data-tab="drilldown" role="tab" aria-selected="false" aria-controls="pane-drilldown" id="tab-drilldown">Statements</button>
+    <button class="tab-btn" data-tab="crosssystem" role="tab" aria-selected="false" aria-controls="pane-crosssystem" id="tab-crosssystem">Cross-System</button>
+    <button class="tab-btn" data-tab="validation" role="tab" aria-selected="false" aria-controls="pane-validation" id="tab-validation">Validation</button>
+    <button class="tab-btn" data-tab="agestage" role="tab" aria-selected="false" aria-controls="pane-agestage" id="tab-agestage">Age-Stage</button>
+    <button class="tab-btn" data-tab="riskgov" role="tab" aria-selected="false" aria-controls="pane-riskgov" id="tab-riskgov">Risk-Governance</button>
 </nav>
 
 <div class="kpi-grid" id="kpi-grid"></div>
 
 <main>
     <!-- TAB 1: OVERVIEW -->
-    <section class="tab-pane active" id="pane-overview">
+    <section class="tab-pane active" id="pane-overview" role="tabpanel" aria-labelledby="tab-overview">
         <div class="tab-interpretation" id="tab-interp-overview"></div>
         <div class="headline-banner" id="headline-banner"></div>
         <div class="chart-grid-2">
@@ -72,7 +72,7 @@
     </section>
 
     <!-- TAB 2: DIMENSIONS -->
-    <section class="tab-pane" id="pane-dimensions">
+    <section class="tab-pane" id="pane-dimensions" role="tabpanel" aria-labelledby="tab-dimensions">
         <div class="tab-interpretation" id="tab-interp-dimensions"></div>
         <div class="chart-full">
             <div class="chart-card">
@@ -93,7 +93,7 @@
     </section>
 
     <!-- TAB 3: GAP ANALYSIS -->
-    <section class="tab-pane" id="pane-gaps">
+    <section class="tab-pane" id="pane-gaps" role="tabpanel" aria-labelledby="tab-gaps">
         <div class="tab-interpretation" id="tab-interp-gaps"></div>
         <div class="chart-grid-2">
             <div class="chart-card">
@@ -126,7 +126,7 @@
     </section>
 
     <!-- TAB 4: COMPARATIVE -->
-    <section class="tab-pane" id="pane-comparative">
+    <section class="tab-pane" id="pane-comparative" role="tabpanel" aria-labelledby="tab-comparative">
         <div class="tab-interpretation" id="tab-interp-comparative"></div>
         <div class="chart-grid-2">
             <div class="chart-card">
@@ -161,7 +161,7 @@
     </section>
 
     <!-- TAB 5: DRILL-DOWN -->
-    <section class="tab-pane" id="pane-drilldown">
+    <section class="tab-pane" id="pane-drilldown" role="tabpanel" aria-labelledby="tab-drilldown">
         <div class="tab-interpretation" id="tab-interp-drilldown"></div>
         <div class="chart-card" style="margin-top:16px;">
             <h3>Statement Explorer</h3>
@@ -180,7 +180,7 @@
     </section>
 
     <!-- TAB 6: CROSS-SYSTEM -->
-    <section class="tab-pane" id="pane-crosssystem">
+    <section class="tab-pane" id="pane-crosssystem" role="tabpanel" aria-labelledby="tab-crosssystem">
         <div class="tab-interpretation" id="tab-interp-crosssystem"></div>
         <div class="chart-grid-2">
             <div class="chart-card">
@@ -215,7 +215,7 @@
     </section>
 
     <!-- TAB 7: VALIDATION -->
-    <section class="tab-pane" id="pane-validation">
+    <section class="tab-pane" id="pane-validation" role="tabpanel" aria-labelledby="tab-validation">
         <div class="tab-interpretation" id="tab-interp-validation"></div>
         <div class="chart-grid-2">
             <div class="chart-card">
@@ -248,7 +248,7 @@
     </section>
 
     <!-- TAB 8: AGE-STAGE -->
-    <section class="tab-pane" id="pane-agestage">
+    <section class="tab-pane" id="pane-agestage" role="tabpanel" aria-labelledby="tab-agestage">
         <div class="tab-interpretation" id="tab-interp-agestage"></div>
         <div class="chart-grid-2">
             <div class="chart-card">
@@ -275,7 +275,7 @@
         <div class="chart-full">
             <div class="chart-card">
                 <h3>Age-Weighted CGI Temporal Trend</h3>
-                <div class="chart-subtitle">Mean age-weighted CGI per year by age group (2015-2026)</div>
+                <div class="chart-subtitle">Mean age-weighted CGI per year by age group (2016-2026)</div>
                 <div id="chart-age-temporal" style="height:400px;"></div>
                 <div class="chart-interpretation" id="interp-chart-age-temporal"></div>
             </div>
@@ -283,7 +283,7 @@
     </section>
 
     <!-- TAB 9: RISK-GOVERNANCE -->
-    <section class="tab-pane" id="pane-riskgov">
+    <section class="tab-pane" id="pane-riskgov" role="tabpanel" aria-labelledby="tab-riskgov">
         <div class="tab-interpretation" id="tab-interp-riskgov"></div>
         <div class="chart-grid-2">
             <div class="chart-card">

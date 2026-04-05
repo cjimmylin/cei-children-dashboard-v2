@@ -6,6 +6,14 @@ var TH = {
     text: '#94a3b8', axis: '#334155', split: '#1e293b',
     tooltipBg: 'rgba(15,23,42,0.95)', tooltipBorder: '#334155', tooltipText: '#f1f5f9'
 };
+var TH_DARK = {
+    text: '#94a3b8', axis: '#334155', split: '#1e293b',
+    tooltipBg: 'rgba(15,23,42,0.95)', tooltipBorder: '#334155', tooltipText: '#f1f5f9'
+};
+var TH_LIGHT = {
+    text: '#475569', axis: '#e2e8f0', split: '#f1f5f9',
+    tooltipBg: 'rgba(255,255,255,0.95)', tooltipBorder: '#e2e8f0', tooltipText: '#0f172a'
+};
 var CAT_COLORS = {
     Protection: '#ef4444', Participation: '#6366f1', Provision: '#10b981',
     Governance: '#f59e0b', 'Cross-Cutting': '#8b5cf6'
@@ -21,7 +29,35 @@ function mkChart(id) {
 function _tt() {
     return { backgroundColor: TH.tooltipBg, borderColor: TH.tooltipBorder, textStyle: { color: TH.tooltipText } };
 }
+function _toolbox() {
+    return { show: true, right: 10, top: 0, feature: { saveAsImage: { title: 'Save', pixelRatio: 2 } }, iconStyle: { borderColor: TH.text } };
+}
 function resizeAll() { _charts.forEach(function(c) { try { c.resize(); } catch(e) {} }); }
+function reThemeAll() {
+    _charts.forEach(function(c) {
+        try {
+            var opt = c.getOption();
+            if (opt.xAxis) opt.xAxis.forEach(function(ax) {
+                if (ax.axisLabel) ax.axisLabel.color = TH.text;
+                if (ax.axisLine && ax.axisLine.lineStyle) ax.axisLine.lineStyle.color = TH.axis;
+            });
+            if (opt.yAxis) opt.yAxis.forEach(function(ax) {
+                if (ax.axisLabel) ax.axisLabel.color = TH.text;
+                if (ax.axisLine && ax.axisLine.lineStyle) ax.axisLine.lineStyle.color = TH.axis;
+                if (ax.splitLine && ax.splitLine.lineStyle) ax.splitLine.lineStyle.color = TH.split;
+            });
+            if (opt.tooltip && opt.tooltip.length) opt.tooltip.forEach(function(t) {
+                t.backgroundColor = TH.tooltipBg;
+                t.borderColor = TH.tooltipBorder;
+                if (t.textStyle) t.textStyle.color = TH.tooltipText;
+            });
+            if (opt.toolbox && opt.toolbox.length) opt.toolbox.forEach(function(tb) {
+                if (tb.iconStyle) tb.iconStyle.borderColor = TH.text;
+            });
+            c.setOption(opt);
+        } catch(e) {}
+    });
+}
 
 // ================================================================
 // TAB 1: OVERVIEW
@@ -31,6 +67,7 @@ function renderCGIHistogram() {
     if (!c || !DASH.overview) return;
     var h = DASH.overview.histogram;
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
         grid: { left: 50, right: 20, top: 20, bottom: 40 },
         xAxis: { type: 'category', data: h.labels, axisLabel: { color: TH.text, fontSize: 11 }, axisLine: { lineStyle: { color: TH.axis } } },
@@ -50,9 +87,10 @@ function renderCategoryRadar() {
     var cats = Object.keys(r);
     var vals = cats.map(function(k) { return r[k]; });
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: _tt(),
         radar: {
-            indicator: cats.map(function(k) { return { name: k, max: 15 }; }),
+            indicator: cats.map(function(k) { return { name: k, max: 10 }; }),
             axisName: { color: TH.text, fontSize: 11 },
             splitArea: { areaStyle: { color: ['rgba(99,102,241,0.05)', 'rgba(99,102,241,0.1)'] } },
             splitLine: { lineStyle: { color: TH.split } },
@@ -76,6 +114,7 @@ function renderDimCoverage() {
         DASH.categoryMap[cat].forEach(function(lbl) { catLookup[lbl] = cat; });
     }
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
         grid: { left: 200, right: 60, top: 10, bottom: 20 },
         xAxis: { type: 'value', axisLabel: { color: TH.text }, splitLine: { lineStyle: { color: TH.split } } },
@@ -101,6 +140,7 @@ function renderDimDistributions() {
         var d = dd[f]; zeroD.push(d.zero); lowD.push(d.low); midD.push(d.mid); highD.push(d.high);
     });
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
         legend: { data: ['Zero', 'Low (1-24)', 'Mid (25-49)', 'High (50+)'], textStyle: { color: TH.text, fontSize: 10 }, top: 0 },
         grid: { left: 200, right: 30, top: 40, bottom: 20 },
@@ -128,6 +168,7 @@ function renderCooccurrence() {
     }
     var maxVal = Math.max.apply(null, data.map(function(d) { return d[2]; }));
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ formatter: function(p) { return flds[p.data[1]] + ' + ' + flds[p.data[0]] + ': ' + p.data[2]; } }, _tt()),
         grid: { left: 180, right: 40, top: 10, bottom: 160 },
         xAxis: { type: 'category', data: flds, axisLabel: { color: TH.text, fontSize: 9, rotate: 55 }, axisLine: { lineStyle: { color: TH.axis } } },
@@ -146,6 +187,7 @@ function renderMentionGap() {
     if (!c || !DASH.gaps) return;
     var g = DASH.gaps.mentionVsAction;
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: _tt(),
         grid: { left: 140, right: 40, top: 20, bottom: 20 },
         xAxis: { type: 'value', axisLabel: { color: TH.text }, splitLine: { lineStyle: { color: TH.split } } },
@@ -164,6 +206,7 @@ function renderPPP() {
     if (!c || !DASH.gaps) return;
     var p = DASH.gaps.ppp;
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: _tt(),
         series: [{ type: 'pie', radius: ['45%', '75%'], center: ['50%', '50%'],
             data: [
@@ -182,6 +225,7 @@ function renderGapsRanked() {
     if (!c || !DASH.gaps) return;
     var dims = DASH.gaps.dimRanked;
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
         grid: { left: 200, right: 60, top: 10, bottom: 20 },
         xAxis: { type: 'value', axisLabel: { color: TH.text }, splitLine: { lineStyle: { color: TH.split } } },
@@ -202,6 +246,7 @@ function renderEmerging() {
     var labels = Object.keys(e);
     var vals = labels.map(function(k) { return e[k]; });
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
         grid: { left: 220, right: 60, top: 10, bottom: 20 },
         xAxis: { type: 'value', axisLabel: { color: TH.text }, splitLine: { lineStyle: { color: TH.split } } },
@@ -221,6 +266,7 @@ function renderOrgType() {
     var ot = DASH.comparative.orgType;
     var labels = Object.keys(ot).sort(function(a, b) { return ot[b].cgiMean - ot[a].cgiMean; });
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis' }, _tt()),
         legend: { data: ['Mean CGI', 'Explicit Mentions'], textStyle: { color: TH.text }, top: 0 },
         grid: { left: 140, right: 40, top: 40, bottom: 20 },
@@ -244,6 +290,7 @@ function renderRegion() {
     var rg = DASH.comparative.region;
     var labels = Object.keys(rg).sort(function(a, b) { return rg[b].cgiMean - rg[a].cgiMean; });
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
         grid: { left: 140, right: 40, top: 10, bottom: 20 },
         xAxis: { type: 'value', axisLabel: { color: TH.text }, splitLine: { lineStyle: { color: TH.split } } },
@@ -260,6 +307,7 @@ function renderTemporal() {
     var t = DASH.comparative.temporal;
     var years = Object.keys(t).sort();
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis' }, _tt()),
         legend: { data: ['Total Statements', 'Explicit Child Mention', 'Mean CGI'], textStyle: { color: TH.text }, top: 0 },
         grid: { left: 50, right: 50, top: 50, bottom: 30 },
@@ -290,6 +338,7 @@ function renderOrgHeatmap() {
     var maxVal = 0;
     data.forEach(function(d) { if (d[2] > maxVal) maxVal = d[2]; });
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ formatter: function(p) { return hm.orgTypes[p.data[1]] + ' / ' + hm.fields[p.data[0]] + ': ' + p.data[2] + '%'; } }, _tt()),
         grid: { left: 140, right: 80, top: 10, bottom: 180 },
         xAxis: { type: 'category', data: hm.fields, axisLabel: { color: TH.text, fontSize: 9, rotate: 55 }, axisLine: { lineStyle: { color: TH.axis } } },
@@ -320,6 +369,8 @@ function renderDrilldownTable() {
     tbl.insertAdjacentHTML('beforeend', rows.join(''));
     tbl.querySelectorAll('tbody tr').forEach(function(row) {
         row.addEventListener('click', function() {
+            tbl.querySelectorAll('tbody tr.selected').forEach(function(r) { r.classList.remove('selected'); });
+            row.classList.add('selected');
             var key = row.getAttribute('data-key');
             var stmt = stmts.find(function(s) { return s.key === key; });
             if (stmt) renderStmtDetail(stmt);
@@ -330,13 +381,24 @@ function renderDrilldownTable() {
 function renderStmtDetail(stmt) {
     var panel = document.getElementById('stmt-detail');
     panel.style.display = 'block';
+    // Add close button if not already present
+    if (!panel.querySelector('.detail-close')) {
+        var closeBtn = document.createElement('button');
+        closeBtn.className = 'detail-close';
+        closeBtn.textContent = '\u00D7';
+        closeBtn.addEventListener('click', function() { panel.style.display = 'none'; });
+        panel.insertBefore(closeBtn, panel.firstChild);
+    }
     document.getElementById('detail-title').textContent = stmt.key + ' -- ' + stmt.title;
-    var c = mkChart('chart-stmt-radar');
+    var el = document.getElementById('chart-stmt-radar');
+    var c = echarts.getInstanceByDom(el) || echarts.init(el);
+    if (_charts.indexOf(c) === -1) _charts.push(c);
     if (!c) return;
     var fields = DASH.fieldOrder;
     var labels = fields.map(function(f) { return DASH.fieldLabels[f]; });
     var vals = fields.map(function(f) { return stmt.scores[f] || 0; });
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: _tt(),
         radar: {
             indicator: labels.map(function(l) { return { name: l, max: 100 }; }),
@@ -362,6 +424,7 @@ function renderLasso() {
     var feats = cs.lassoFeatures.slice().reverse();
     var coefs = cs.lassoCoefs.slice().reverse();
     c.setOption({
+        toolbox: _toolbox(),
         title: { text: 'R\u00b2 = ' + cs.rSquared.toFixed(3) + ' | ' + cs.nNonzero + ' non-zero features',
             left: 'center', top: 0, textStyle: { color: TH.text, fontSize: 11, fontWeight: 'normal' } },
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
@@ -380,6 +443,7 @@ function renderVenn() {
     if (!c || !DASH.crossSystem) return;
     var v = DASH.crossSystem.venn;
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: _tt(),
         series: [{ type: 'pie', radius: ['0%', '75%'], center: ['50%', '50%'],
             data: [
@@ -399,6 +463,7 @@ function renderConcordance() {
     if (!c || !DASH.crossSystem) return;
     var kr = DASH.crossSystem.kappaResults;
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
         grid: { left: 260, right: 40, top: 10, bottom: 20 },
         xAxis: { type: 'value', name: "Cohen's Kappa", min: 0, max: 0.5,
@@ -446,6 +511,7 @@ function renderPrecision() {
     });
     var counts = labels.map(function(l) { return st[l] ? st[l].n : 0; });
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', formatter: function(p) {
             var i = p[0].dataIndex;
             return display[i] + '\nPrecision: ' + precs[i] + '%\nSampled: ' + counts[i];
@@ -472,6 +538,7 @@ function renderWeightMatrix() {
         }
     }
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ formatter: function(p) {
             return labels[p.data[1]] + ' vs ' + labels[p.data[0]] + ': ' + p.data[2].toFixed(4);
         } }, _tt()),
@@ -490,6 +557,7 @@ function renderFloorDecomp() {
     if (!c || !DASH.validation) return;
     var fd = DASH.validation.floorDecomp;
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
         legend: { data: ['Zero', 'Below Floor', 'Floor (=50)', 'Light (51-65)', 'Substantive (66-85)', 'Deep (86+)'],
             textStyle: { color: TH.text, fontSize: 9 }, top: 0 },
@@ -497,7 +565,7 @@ function renderFloorDecomp() {
         xAxis: { type: 'value', axisLabel: { color: TH.text }, splitLine: { lineStyle: { color: TH.split } } },
         yAxis: { type: 'category', data: fd.labels, inverse: true, axisLabel: { color: TH.text, fontSize: 10 } },
         series: [
-            { name: 'Zero', type: 'bar', stack: 'total', data: fd.zero, itemStyle: { color: '#1e293b' } },
+            { name: 'Zero', type: 'bar', stack: 'total', data: fd.zero, itemStyle: { color: '#334155' } },
             { name: 'Below Floor', type: 'bar', stack: 'total', data: fd.below, itemStyle: { color: '#475569' } },
             { name: 'Floor (=50)', type: 'bar', stack: 'total', data: fd.floor, itemStyle: { color: '#f59e0b' } },
             { name: 'Light (51-65)', type: 'bar', stack: 'total', data: fd.light, itemStyle: { color: '#6366f1' } },
@@ -517,6 +585,7 @@ function renderMonteCarlo() {
     var los = mc.ci95Lo.slice().reverse();
     var his = mc.ci95Hi.slice().reverse();
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', formatter: function(p) {
             var i = p[0].dataIndex;
             return labels[i] + '\nRef Rank: ' + refs[i] + '\nMedian: ' + medians[i] + '\n95% CI: [' + los[i] + ', ' + his[i] + ']';
@@ -560,6 +629,7 @@ function renderAgeFlags() {
     var vals = [af['0-5'], af['6-12'], af['13-17'], af['transition']];
     var colors = ['#ef4444', '#f59e0b', '#6366f1', '#8b5cf6'];
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
         grid: { left: 60, right: 40, top: 20, bottom: 40 },
         xAxis: { type: 'category', data: labels, axisLabel: { color: TH.text, fontSize: 12 }, axisLine: { lineStyle: { color: TH.axis } } },
@@ -575,6 +645,7 @@ function renderOrgAge() {
     if (!c || !DASH.ageStage) return;
     var oa = DASH.ageStage.orgAgeCGI;
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis' }, _tt()),
         legend: { data: ['0-5 yrs', '6-12 yrs', '13-17 yrs'], textStyle: { color: TH.text }, top: 0 },
         grid: { left: 140, right: 40, top: 40, bottom: 20 },
@@ -602,6 +673,7 @@ function renderDevHeatmap() {
         }
     }
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ formatter: function(p) {
             return dh.dims[p.data[1]] + ' / ' + dh.ageGroups[p.data[0]] + ': ' + p.data[2].toFixed(1);
         } }, _tt()),
@@ -623,6 +695,7 @@ function renderAgeTemporal() {
     if (!c || !DASH.ageStage) return;
     var at = DASH.ageStage.ageTemporal;
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis' }, _tt()),
         legend: { data: ['0-5 yrs', '6-12 yrs', '13-17 yrs'], textStyle: { color: TH.text }, top: 0 },
         grid: { left: 50, right: 30, top: 50, bottom: 30 },
@@ -670,6 +743,7 @@ function renderLatency() {
     });
     var minYear = 2013, maxYear = 2026;
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ formatter: function(p) {
             if (p.seriesType === 'scatter') {
                 return tooltips[p.dataIndex] + '\nThreat: ' + p.data[0] + '\nGov: ' + p.data[1] + '\nLag: ' + (p.data[1] - p.data[0]) + ' yrs';
@@ -698,6 +772,7 @@ function renderSectorRadar() {
     var vals = sectors.map(function(s) { return sr[s]; });
     var maxVal = Math.max.apply(null, vals) || 50;
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: _tt(),
         radar: {
             indicator: sectors.map(function(s) { return { name: s, max: maxVal * 1.2 }; }),
@@ -720,6 +795,7 @@ function renderDimGapRank() {
     var labels = dg.map(function(d) { return d.label; });
     var pcts = dg.map(function(d) { return d.pct; });
     c.setOption({
+        toolbox: _toolbox(),
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' },
             formatter: function(p) {
                 var i = p[0].dataIndex;
@@ -852,7 +928,7 @@ function renderHeadline() {
     var banner = document.getElementById('headline-banner');
     banner.textContent = '';
     var p = document.createElement('p');
-    p.textContent = DASH.texts.headline;
+    p.innerHTML = DASH.texts.headline;
     banner.appendChild(p);
     var list = document.getElementById('findings-list');
     list.textContent = '';
@@ -870,7 +946,9 @@ function renderTopTable() {
     var rows = ['<thead><tr><th>#</th><th>Key</th><th>Title</th><th>Year</th><th>Org Type</th><th>Region</th><th>CGI</th></tr></thead><tbody>'];
     top.forEach(function(s, i) {
         var cls = s.cgi >= 20 ? 'cgi-high' : s.cgi >= 10 ? 'cgi-mid' : 'cgi-low';
-        rows.push('<tr><td>' + (i + 1) + '</td><td>' + s.key + '</td><td>' + (s.title || '').substring(0, 65) + '</td>');
+        var title = (s.title || '');
+        var display = title.length > 65 ? title.substring(0, 62) + '...' : title;
+        rows.push('<tr><td>' + (i + 1) + '</td><td>' + s.key + '</td><td title="' + escHtml(title) + '">' + escHtml(display) + '</td>');
         rows.push('<td>' + s.year + '</td><td>' + (s.org_type || '') + '</td><td>' + (s.region || '') + '</td>');
         rows.push('<td><span class="cgi-badge ' + cls + '">' + s.cgi.toFixed(1) + '</span></td></tr>');
     });
@@ -925,7 +1003,9 @@ themeBtn.addEventListener('click', function() {
         html.setAttribute('data-theme', 'light');
         themeBtn.textContent = '\u2600';
     }
-    setTimeout(resizeAll, 100);
+    var newTH = current === 'light' ? TH_DARK : TH_LIGHT;
+    Object.keys(newTH).forEach(function(k) { TH[k] = newTH[k]; });
+    setTimeout(function() { resizeAll(); reThemeAll(); }, 100);
 });
 
 // Search
