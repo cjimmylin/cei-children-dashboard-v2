@@ -738,7 +738,7 @@ function renderDimGapRank() {
 // ================================================================
 // EXPERT INTERPRETATIONS
 // ================================================================
-var _interpVisible = false;
+var _interpVisible = true;
 
 function renderTabInterpretation(tabKey) {
     if (typeof INTERPRETATIONS === 'undefined') return;
@@ -766,11 +766,20 @@ function renderChartInterpretation(chartId) {
     var el = document.getElementById('interp-' + chartId);
     if (!el || el.children.length > 0) return;
     var html = '';
+    if (data.dataDescription || data.methodology) {
+        html += '<div class="interp-data-method">';
+        if (data.dataDescription) html += '<strong>Data:</strong> ' + escHtml(data.dataDescription) + ' ';
+        if (data.methodology) html += '<strong>Method:</strong> ' + escHtml(data.methodology);
+        html += '</div>';
+    }
     html += '<div class="interp-label">What This Shows</div><div class="interp-text">' + escHtml(data.whatThisShows) + '</div>';
-    html += '<div class="interp-label">Key Finding</div><div class="interp-text">' + escHtml(data.keyFinding) + '</div>';
+    html += '<div class="interp-label">Key Finding</div><div class="interp-text" style="font-weight:600">' + escHtml(data.keyFinding) + '</div>';
     html += '<div class="interp-label">Why It Matters</div><div class="interp-text">' + escHtml(data.whyItMatters) + '</div>';
     html += '<div class="interp-label">Expert Interpretation</div><div class="interp-text">' + escHtml(data.expertInterpretation) + '</div>';
-    html += '<div class="interp-expert">' + escHtml(data.expertName) + ' -- ' + escHtml(data.expertRole) + '</div>';
+    if (data.conclusion) {
+        html += '<div class="interp-label">Conclusion</div><div class="interp-text interp-conclusion">' + escHtml(data.conclusion) + '</div>';
+    }
+    html += '<div class="interp-expert">' + escHtml(data.expertName) + ' \u2014 ' + escHtml(data.expertRole) + '</div>';
     el.insertAdjacentHTML('beforeend', html);
     if (_interpVisible) el.classList.add('visible');
 }
@@ -809,6 +818,7 @@ function renderInterpretationsForTab(tabKey) {
 var interpBtn = document.getElementById('interp-toggle');
 if (interpBtn) {
     interpBtn.addEventListener('click', function() { toggleInterpretations(); });
+    interpBtn.classList.add('active');
 }
 
 // ================================================================

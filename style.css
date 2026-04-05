@@ -227,6 +227,24 @@ main { padding: 0 24px 40px; }
     background: rgba(99,102,241,0.1);
 }
 
+.interp-data-method {
+    background: rgba(0,0,0,0.15);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.74rem;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+.interp-conclusion {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
 @media (max-width: 768px) {
     .chart-grid-2, .chart-grid-3 { grid-template-columns: 1fr; }
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
