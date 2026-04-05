@@ -442,19 +442,30 @@ function renderVenn() {
     var c = mkChart('chart-venn');
     if (!c || !DASH.crossSystem) return;
     var v = DASH.crossSystem.venn;
+    var total = v.cgOnly + v.both + v.fpOnly + v.neither;
+    var pct = function(n) { return (100 * n / total).toFixed(1) + '%'; };
     c.setOption({
         toolbox: _toolbox(),
-        tooltip: _tt(),
-        series: [{ type: 'pie', radius: ['0%', '75%'], center: ['50%', '50%'],
-            data: [
-                { value: v.cgOnly, name: 'CGI-only: ' + v.cgOnly, itemStyle: { color: '#6366f1' } },
-                { value: v.both, name: 'Both: ' + v.both, itemStyle: { color: '#10b981' } },
-                { value: v.fpOnly, name: 'fp-only: ' + v.fpOnly, itemStyle: { color: '#f59e0b' } },
-                { value: v.neither, name: 'Neither: ' + v.neither, itemStyle: { color: '#334155' } }
-            ],
-            label: { color: TH.text, fontSize: 11, formatter: '{b}' },
-            emphasis: { label: { fontSize: 13, fontWeight: 'bold' } }
-        }]
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' },
+            formatter: function(params) {
+                var p = params[0];
+                return p.name + ': ' + p.value + ' (' + pct(p.value) + ')';
+            }
+        }, _tt()),
+        grid: { left: 120, right: 60, top: 10, bottom: 30 },
+        xAxis: { type: 'value', axisLabel: { color: TH.text }, splitLine: { lineStyle: { color: TH.split } } },
+        yAxis: { type: 'category', inverse: true,
+            data: ['CGI-only', 'Both systems', 'Fingerprint-only', 'Neither'],
+            axisLabel: { color: TH.text, fontSize: 11 }
+        },
+        series: [{ type: 'bar', data: [
+            { value: v.cgOnly, itemStyle: { color: '#6366f1' } },
+            { value: v.both, itemStyle: { color: '#10b981' } },
+            { value: v.fpOnly, itemStyle: { color: '#f59e0b' } },
+            { value: v.neither, itemStyle: { color: '#475569' } }
+        ], label: { show: true, position: 'right', color: TH.text, fontSize: 11,
+            formatter: function(p) { return p.value + ' (' + pct(p.value) + ')'; }
+        }, barWidth: '60%' }]
     });
 }
 

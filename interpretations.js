@@ -270,7 +270,7 @@ var INTERPRETATIONS = {
       "chart-venn": {
         dataDescription: "Overlap between CGI > 0 and fp_hr_childrens_rights > 0 across all 3,044 statements.",
         methodology: "Set comparison of binary detection flags from both systems.",
-        whatThisShows: "How the CGI and the Tapestry fp_hr_childrens_rights feature classify the same 3,044 statements.",
+        whatThisShows: "A bar chart showing how the CGI and the Tapestry fp_hr_childrens_rights feature classify the same 3,044 statements into four categories: detected by CGI only, both systems, fingerprint only, or neither.",
         keyFinding: "CGI detects 267 statements the fingerprint system misses (cgOnly). The fingerprint detects 198 the CGI misses (fpOnly). 236 are detected by both systems. The systems are complementary, with more balanced coverage than expected.",
         whyItMatters: "The CGI-only segment (267 statements) demonstrates the value of a dedicated scoring instrument. These are statements where children's governance content is present but expressed in vocabulary or structure that general-purpose features do not capture. The fingerprint-only segment (198) is larger than expected, indicating significant complementary detection.",
         expertInterpretation: "The relatively balanced asymmetry (267 vs 198) is notable. Unlike expected, the general fingerprint system captures a substantial number of children-relevant statements that the CGI misses. This suggests that children's governance content sometimes appears in vocabularies outside the CGI's 20-dimension keyword dictionaries (e.g., disability rights, vulnerability protection). Both systems improve when their disagreements are investigated.",
