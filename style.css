@@ -255,6 +255,26 @@ main { padding: 0 24px 40px; }
     color: var(--text-primary);
 }
 
+/* ========== CHART SUMMARY (always visible) ========== */
+.chart-summary {
+    margin-top: 8px;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    display: none;
+}
+.chart-summary.visible { display: block; }
+.chart-summary .summary-finding {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+.chart-summary .summary-conclusion {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 0.76rem;
+}
+
 @media (max-width: 768px) {
     .chart-grid-2, .chart-grid-3 { grid-template-columns: 1fr; }
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }

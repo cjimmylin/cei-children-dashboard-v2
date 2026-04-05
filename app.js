@@ -886,7 +886,29 @@ function renderTabInterpretation(tabKey) {
     html += '<div class="tab-overview">' + escHtml(s.overview) + '</div>';
     html += '<div class="tab-attribution">' + escHtml(s.expertName) + ' -- ' + escHtml(s.expertRole) + '</div>';
     el.insertAdjacentHTML('beforeend', html);
-    if (_interpVisible) el.classList.add('visible');
+    el.classList.add('visible');
+}
+
+function renderChartSummary(chartId) {
+    if (typeof INTERPRETATIONS === 'undefined') return;
+    var tabs = Object.keys(INTERPRETATIONS);
+    var data = null;
+    for (var t = 0; t < tabs.length; t++) {
+        var charts = INTERPRETATIONS[tabs[t]].charts;
+        if (charts && charts[chartId]) { data = charts[chartId]; break; }
+    }
+    if (!data) return;
+    var el = document.getElementById('summary-' + chartId);
+    if (!el || el.children.length > 0) return;
+    var html = '';
+    if (data.keyFinding) {
+        html += '<div class="summary-finding">' + escHtml(data.keyFinding) + '</div>';
+    }
+    if (data.conclusion) {
+        html += '<div class="summary-conclusion">' + escHtml(data.conclusion) + '</div>';
+    }
+    el.insertAdjacentHTML('beforeend', html);
+    el.classList.add('visible');  // Always visible, not controlled by toggle
 }
 
 function renderChartInterpretation(chartId) {
@@ -931,7 +953,8 @@ function toggleInterpretations() {
         if (_interpVisible) { btn.classList.add('active'); }
         else { btn.classList.remove('active'); }
     }
-    var panels = document.querySelectorAll('.tab-interpretation, .chart-interpretation');
+    // Only toggle deep-dive panels, NOT tab summaries or chart summaries
+    var panels = document.querySelectorAll('.chart-interpretation');
     panels.forEach(function(p) {
         if (_interpVisible) { p.classList.add('visible'); }
         else { p.classList.remove('visible'); }
@@ -945,6 +968,7 @@ function renderInterpretationsForTab(tabKey) {
     if (!tabData || !tabData.charts) return;
     var chartIds = Object.keys(tabData.charts);
     for (var i = 0; i < chartIds.length; i++) {
+        renderChartSummary(chartIds[i]);
         renderChartInterpretation(chartIds[i]);
     }
 }
