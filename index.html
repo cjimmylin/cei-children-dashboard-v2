@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Children &amp; AI Governance v2 &mdash; Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+    <div style="display:flex;align-items:baseline;gap:8px;">
+        <h1>Children &amp; Adolescents in AI Governance v2</h1>
+        <span class="header-subtitle">3,044 statements &middot; 20 dimensions &middot; 9 tabs</span>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle theme">&#9790;</button>
+    <button class="interp-toggle-global" id="interp-toggle" title="Toggle expert interpretations">Expert Commentary</button>
+</header>
+
+<nav class="tab-nav" role="tablist">
+    <button class="tab-btn active" data-tab="overview">Overview</button>
+    <button class="tab-btn" data-tab="dimensions">Dimensions</button>
+    <button class="tab-btn" data-tab="gaps">Gap Analysis</button>
+    <button class="tab-btn" data-tab="comparative">Comparative</button>
+    <button class="tab-btn" data-tab="drilldown">Statements</button>
+    <button class="tab-btn" data-tab="crosssystem">Cross-System</button>
+    <button class="tab-btn" data-tab="validation">Validation</button>
+    <button class="tab-btn" data-tab="agestage">Age-Stage</button>
+    <button class="tab-btn" data-tab="riskgov">Risk-Governance</button>
+</nav>
+
+<div class="kpi-grid" id="kpi-grid"></div>
+
+<main>
+    <!-- TAB 1: OVERVIEW -->
+    <section class="tab-pane active" id="pane-overview">
+        <div class="tab-interpretation" id="tab-interp-overview"></div>
+        <div class="headline-banner" id="headline-banner"></div>
+        <div class="chart-grid-2">
+            <div class="chart-card">
+                <h3>Children Governance Index (CGI) Distribution</h3>
+                <div class="chart-subtitle">Composite score across 20 dimensions, 0-100 scale</div>
+                <div id="chart-cgi-hist" style="height:360px;"></div>
+                <div class="chart-interpretation" id="interp-chart-cgi-hist"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Category Radar &mdash; 3 Ps Framework</h3>
+                <div class="chart-subtitle">Average scores: Protection, Participation, Provision, Governance, Cross-Cutting</div>
+                <div id="chart-category-radar" style="height:360px;"></div>
+                <div class="chart-interpretation" id="interp-chart-category-radar"></div>
+            </div>
+        </div>
+        <div class="chart-full">
+            <div class="chart-card">
+                <h3>Per-Dimension Coverage (score &ge; 50)</h3>
+                <div class="chart-subtitle">Number of statements substantively addressing each dimension</div>
+                <div id="chart-dim-coverage" style="height:520px;"></div>
+                <div class="chart-interpretation" id="interp-chart-dim-coverage"></div>
+            </div>
+        </div>
+        <h2 class="section-title">Key Findings</h2>
+        <ul class="findings-list" id="findings-list"></ul>
+        <h2 class="section-title">Top 25 Statements by CGI</h2>
+        <div class="chart-card" style="overflow-x:auto;">
+            <table class="stmt-table" id="top-table"></table>
+            <div class="chart-interpretation" id="interp-top-table"></div>
+        </div>
+    </section>
+
+    <!-- TAB 2: DIMENSIONS -->
+    <section class="tab-pane" id="pane-dimensions">
+        <div class="tab-interpretation" id="tab-interp-dimensions"></div>
+        <div class="chart-full">
+            <div class="chart-card">
+                <h3>Score Distribution by Dimension</h3>
+                <div class="chart-subtitle">Stacked bar: Zero / Low (1-24) / Mid (25-49) / High (&ge;50)</div>
+                <div id="chart-dim-dist" style="height:600px;"></div>
+                <div class="chart-interpretation" id="interp-chart-dim-dist"></div>
+            </div>
+        </div>
+        <div class="chart-full">
+            <div class="chart-card">
+                <h3>Dimension Co-occurrence Matrix</h3>
+                <div class="chart-subtitle">Number of statements scoring &ge;50 on both dimensions simultaneously</div>
+                <div id="chart-cooccur" style="height:650px;"></div>
+                <div class="chart-interpretation" id="interp-chart-cooccur"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 3: GAP ANALYSIS -->
+    <section class="tab-pane" id="pane-gaps">
+        <div class="tab-interpretation" id="tab-interp-gaps"></div>
+        <div class="chart-grid-2">
+            <div class="chart-card">
+                <h3>The Mention-Action Gap</h3>
+                <div class="chart-subtitle">Statements that mention children vs. those with enforcement or participation</div>
+                <div id="chart-mention-gap" style="height:300px;"></div>
+                <div class="chart-interpretation" id="interp-chart-mention-gap"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Protection &ndash; Participation &ndash; Provision</h3>
+                <div class="chart-subtitle">The 3 Ps: how many statements cover each pillar?</div>
+                <div id="chart-ppp" style="height:300px;"></div>
+                <div class="chart-interpretation" id="interp-chart-ppp"></div>
+            </div>
+        </div>
+        <div class="chart-grid-2">
+            <div class="chart-card">
+                <h3>Governance Gaps &mdash; Least Covered Dimensions</h3>
+                <div class="chart-subtitle">Dimensions ranked by coverage, lowest first</div>
+                <div id="chart-gaps-ranked" style="height:520px;"></div>
+                <div class="chart-interpretation" id="interp-chart-gaps-ranked"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Emerging Threats Coverage</h3>
+                <div class="chart-subtitle">Statements addressing specific emerging risks to children</div>
+                <div id="chart-emerging" style="height:520px;"></div>
+                <div class="chart-interpretation" id="interp-chart-emerging"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 4: COMPARATIVE -->
+    <section class="tab-pane" id="pane-comparative">
+        <div class="tab-interpretation" id="tab-interp-comparative"></div>
+        <div class="chart-grid-2">
+            <div class="chart-card">
+                <h3>CGI by Organization Type</h3>
+                <div class="chart-subtitle">Mean CGI and explicit child mention rate per org type</div>
+                <div id="chart-org-type" style="height:400px;"></div>
+                <div class="chart-interpretation" id="interp-chart-org-type"></div>
+            </div>
+            <div class="chart-card">
+                <h3>CGI by Region</h3>
+                <div class="chart-subtitle">Mean CGI per region</div>
+                <div id="chart-region" style="height:400px;"></div>
+                <div class="chart-interpretation" id="interp-chart-region"></div>
+            </div>
+        </div>
+        <div class="chart-full">
+            <div class="chart-card">
+                <h3>Temporal Trends &mdash; Children in AI Governance</h3>
+                <div class="chart-subtitle">Statements per year with explicit child mention and mean CGI (2010-2026)</div>
+                <div id="chart-temporal" style="height:400px;"></div>
+                <div class="chart-interpretation" id="interp-chart-temporal"></div>
+            </div>
+        </div>
+        <div class="chart-full">
+            <div class="chart-card">
+                <h3>Organization Type &times; Dimension Heatmap</h3>
+                <div class="chart-subtitle">% of statements scoring &ge;50 per dimension, by org type</div>
+                <div id="chart-org-heatmap" style="height:500px;"></div>
+                <div class="chart-interpretation" id="interp-chart-org-heatmap"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 5: DRILL-DOWN -->
+    <section class="tab-pane" id="pane-drilldown">
+        <div class="tab-interpretation" id="tab-interp-drilldown"></div>
+        <div class="chart-card" style="margin-top:16px;">
+            <h3>Statement Explorer</h3>
+            <div class="chart-subtitle">Top 200 statements by CGI. Click a row to see dimension breakdown.</div>
+            <div style="margin:12px 0;">
+                <input type="text" id="stmt-search" placeholder="Search by title or key..."
+                       style="width:100%;padding:8px 12px;background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;font-size:0.82rem;">
+            </div>
+            <table class="stmt-table" id="drilldown-table"></table>
+            <div class="chart-interpretation" id="interp-drilldown-table"></div>
+        </div>
+        <div class="chart-card" style="margin-top:16px;display:none;" id="stmt-detail">
+            <h3 id="detail-title">Statement Detail</h3>
+            <div id="chart-stmt-radar" style="height:400px;"></div>
+        </div>
+    </section>
+
+    <!-- TAB 6: CROSS-SYSTEM -->
+    <section class="tab-pane" id="pane-crosssystem">
+        <div class="tab-interpretation" id="tab-interp-crosssystem"></div>
+        <div class="chart-grid-2">
+            <div class="chart-card">
+                <h3>LASSO Feature Importance &mdash; Top 20</h3>
+                <div class="chart-subtitle">LASSO regression: Tapestry features predicting CGI</div>
+                <div id="chart-lasso" style="height:520px;"></div>
+                <div class="chart-interpretation" id="interp-chart-lasso"></div>
+            </div>
+            <div class="chart-card">
+                <h3>System Overlap &mdash; CGI vs Tapestry fp_hr_childrens_rights</h3>
+                <div class="chart-subtitle">How the two scoring systems classify the same 3,044 statements</div>
+                <div id="chart-venn" style="height:520px;"></div>
+                <div class="chart-interpretation" id="interp-chart-venn"></div>
+            </div>
+        </div>
+        <div class="chart-grid-2">
+            <div class="chart-card">
+                <h3>Concordance (Cohen's Kappa) by Dimension Pair</h3>
+                <div class="chart-subtitle">Agreement between CGI dimensions and matching Tapestry features</div>
+                <div id="chart-concordance" style="height:400px;"></div>
+                <div class="chart-interpretation" id="interp-chart-concordance"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Discordance &mdash; Blind Spots &amp; Reverse Gaps</h3>
+                <div class="chart-subtitle">Top cases where the two systems disagree</div>
+                <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
+                    <table class="stmt-table" id="discord-table"></table>
+                </div>
+                <div class="chart-interpretation" id="interp-discord-table"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 7: VALIDATION -->
+    <section class="tab-pane" id="pane-validation">
+        <div class="tab-interpretation" id="tab-interp-validation"></div>
+        <div class="chart-grid-2">
+            <div class="chart-card">
+                <h3>Precision by Stratum</h3>
+                <div class="chart-subtitle">Manual validation: TP/(TP+FP) per CGI stratum (A=high, B=mid, C=low, D=discordant)</div>
+                <div id="chart-precision" style="height:360px;"></div>
+                <div class="chart-interpretation" id="interp-chart-precision"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Weight Sensitivity Matrix</h3>
+                <div class="chart-subtitle">Spearman rank correlations across 6 weighting schemes (all &gt;0.93)</div>
+                <div id="chart-weight-matrix" style="height:360px;"></div>
+                <div class="chart-interpretation" id="interp-chart-weight-matrix"></div>
+            </div>
+        </div>
+        <div class="chart-grid-2">
+            <div class="chart-card">
+                <h3>Strong-Floor Decomposition</h3>
+                <div class="chart-subtitle">Per-dimension breakdown: zero / below-floor / floor-clamped (=50) / light / substantive / deep</div>
+                <div id="chart-floor" style="height:600px;"></div>
+                <div class="chart-interpretation" id="interp-chart-floor"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Monte Carlo Rank Stability &mdash; Top 10</h3>
+                <div class="chart-subtitle">95% CI of rank under 1,000 random weight perturbations</div>
+                <div id="chart-montecarlo" style="height:600px;"></div>
+                <div class="chart-interpretation" id="interp-chart-montecarlo"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 8: AGE-STAGE -->
+    <section class="tab-pane" id="pane-agestage">
+        <div class="tab-interpretation" id="tab-interp-agestage"></div>
+        <div class="chart-grid-2">
+            <div class="chart-card">
+                <h3>Age-Group Flag Detection</h3>
+                <div class="chart-subtitle">Statements scoring &ge;50 per age bracket</div>
+                <div id="chart-age-flags" style="height:360px;"></div>
+                <div class="chart-interpretation" id="interp-chart-age-flags"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Age-Weighted CGI by Org Type (Top 5)</h3>
+                <div class="chart-subtitle">Mean age-weighted CGI per age group, top 5 org types</div>
+                <div id="chart-org-age" style="height:360px;"></div>
+                <div class="chart-interpretation" id="interp-chart-org-age"></div>
+            </div>
+        </div>
+        <div class="chart-full">
+            <div class="chart-card">
+                <h3>Developmental Relevance Heatmap</h3>
+                <div class="chart-subtitle">Average 20-dimension score among statements flagged per age group</div>
+                <div id="chart-dev-heatmap" style="height:600px;"></div>
+                <div class="chart-interpretation" id="interp-chart-dev-heatmap"></div>
+            </div>
+        </div>
+        <div class="chart-full">
+            <div class="chart-card">
+                <h3>Age-Weighted CGI Temporal Trend</h3>
+                <div class="chart-subtitle">Mean age-weighted CGI per year by age group (2015-2026)</div>
+                <div id="chart-age-temporal" style="height:400px;"></div>
+                <div class="chart-interpretation" id="interp-chart-age-temporal"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 9: RISK-GOVERNANCE -->
+    <section class="tab-pane" id="pane-riskgov">
+        <div class="tab-interpretation" id="tab-interp-riskgov"></div>
+        <div class="chart-grid-2">
+            <div class="chart-card">
+                <h3>Risk-Governance Traffic Light Matrix</h3>
+                <div class="chart-subtitle">Risks rated by governance coverage status</div>
+                <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+                    <table class="stmt-table" id="risk-table"></table>
+                </div>
+                <div class="chart-interpretation" id="interp-risk-table"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Governance Response Latency</h3>
+                <div class="chart-subtitle">Threat emergence year vs. first governance response. Diagonal = instant response.</div>
+                <div id="chart-latency" style="height:520px;"></div>
+                <div class="chart-interpretation" id="interp-chart-latency"></div>
+            </div>
+        </div>
+        <div class="chart-grid-2">
+            <div class="chart-card">
+                <h3>Sector Coverage Radar</h3>
+                <div class="chart-subtitle">Average governance response across 8 sectors</div>
+                <div id="chart-sector-radar" style="height:400px;"></div>
+                <div class="chart-interpretation" id="interp-chart-sector-radar"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Dimension Gap Ranking</h3>
+                <div class="chart-subtitle">% of child-mentioning statements (n=503) scoring &ge;50 per dimension</div>
+                <div id="chart-dim-gap-rank" style="height:520px;"></div>
+                <div class="chart-interpretation" id="interp-chart-dim-gap-rank"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="data.js"></script>
+<script src="interpretations.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
