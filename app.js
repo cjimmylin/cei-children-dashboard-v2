@@ -1,4 +1,4 @@
-// Children & AI Governance v2 — App + Charts
+// Children & AI Governance v3 — App + Charts
 // All data pre-computed in data.js (DASH constant)
 
 var _charts = [];
@@ -15,7 +15,7 @@ var TH_LIGHT = {
     tooltipBg: 'rgba(255,255,255,0.95)', tooltipBorder: '#e2e8f0', tooltipText: '#0f172a'
 };
 var CAT_COLORS = {
-    Protection: '#ef4444', Participation: '#6366f1', Provision: '#10b981',
+    Protection: '#ef4444', Participation: '#818cf8', Provision: '#10b981',
     Governance: '#f59e0b', 'Cross-Cutting': '#8b5cf6'
 };
 
@@ -54,6 +54,20 @@ function reThemeAll() {
             if (opt.toolbox && opt.toolbox.length) opt.toolbox.forEach(function(tb) {
                 if (tb.iconStyle) tb.iconStyle.borderColor = TH.text;
             });
+            if (opt.radar) opt.radar.forEach(function(r) {
+                if (r.axisName) r.axisName.color = TH.text;
+                if (r.splitLine && r.splitLine.lineStyle) r.splitLine.lineStyle.color = TH.split;
+                if (r.axisLine && r.axisLine.lineStyle) r.axisLine.lineStyle.color = TH.axis;
+            });
+            if (opt.visualMap) opt.visualMap.forEach(function(vm) {
+                if (vm.textStyle) vm.textStyle.color = TH.text;
+            });
+            if (opt.legend) opt.legend.forEach(function(lg) {
+                if (lg.textStyle) lg.textStyle.color = TH.text;
+            });
+            if (opt.title) opt.title.forEach(function(t) {
+                if (t.textStyle) t.textStyle.color = TH.text;
+            });
             c.setOption(opt);
         } catch(e) {}
     });
@@ -71,7 +85,7 @@ function renderCGIHistogram() {
         tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
         grid: { left: 50, right: 20, top: 20, bottom: 40 },
         xAxis: { type: 'category', data: h.labels, axisLabel: { color: TH.text, fontSize: 11 }, axisLine: { lineStyle: { color: TH.axis } } },
-        yAxis: { type: 'value', axisLabel: { color: TH.text }, splitLine: { lineStyle: { color: TH.split } } },
+        yAxis: { type: 'value', name: 'Number of Statements', axisLabel: { color: TH.text }, splitLine: { lineStyle: { color: TH.split } } },
         series: [{
             type: 'bar', data: h.counts,
             itemStyle: { color: function(p) { return p.dataIndex < 2 ? '#475569' : p.dataIndex < 5 ? '#6366f1' : '#10b981'; } },
@@ -171,10 +185,10 @@ function renderCooccurrence() {
         toolbox: _toolbox(),
         tooltip: Object.assign({ formatter: function(p) { return flds[p.data[1]] + ' + ' + flds[p.data[0]] + ': ' + p.data[2]; } }, _tt()),
         grid: { left: 180, right: 40, top: 10, bottom: 160 },
-        xAxis: { type: 'category', data: flds, axisLabel: { color: TH.text, fontSize: 9, rotate: 55 }, axisLine: { lineStyle: { color: TH.axis } } },
-        yAxis: { type: 'category', data: flds, axisLabel: { color: TH.text, fontSize: 9 }, axisLine: { lineStyle: { color: TH.axis } } },
+        xAxis: { type: 'category', data: flds, axisLabel: { color: TH.text, fontSize: 11, rotate: 55 }, axisLine: { lineStyle: { color: TH.axis } } },
+        yAxis: { type: 'category', data: flds, axisLabel: { color: TH.text, fontSize: 11 }, axisLine: { lineStyle: { color: TH.axis } } },
         visualMap: { min: 0, max: maxVal || 1, calculable: true, orient: 'horizontal', left: 'center', bottom: 0,
-            inRange: { color: ['#1e293b', '#312e81', '#6366f1', '#10b981', '#f59e0b'] }, textStyle: { color: TH.text } },
+            inRange: { color: ['#2d3748', '#312e81', '#6366f1', '#10b981', '#f59e0b'] }, textStyle: { color: TH.text } },
         series: [{ type: 'heatmap', data: data, label: { show: false } }]
     });
 }
@@ -205,18 +219,18 @@ function renderPPP() {
     var c = mkChart('chart-ppp');
     if (!c || !DASH.gaps) return;
     var p = DASH.gaps.ppp;
+    var cats = ['Protection', 'Participation', 'Provision'];
+    var vals = [p.Protection, p.Participation, p.Provision];
     c.setOption({
         toolbox: _toolbox(),
-        tooltip: _tt(),
-        series: [{ type: 'pie', radius: ['45%', '75%'], center: ['50%', '50%'],
-            data: [
-                { value: p.Protection, name: 'Protection', itemStyle: { color: '#ef4444' } },
-                { value: p.Participation, name: 'Participation', itemStyle: { color: '#6366f1' } },
-                { value: p.Provision, name: 'Provision', itemStyle: { color: '#10b981' } }
-            ],
-            label: { color: TH.text, fontSize: 12, formatter: '{b}\n{c} stmts' },
-            emphasis: { label: { fontSize: 14, fontWeight: 'bold' } }
-        }]
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
+        grid: { left: 120, right: 60, top: 10, bottom: 20 },
+        xAxis: { type: 'value', axisLabel: { color: TH.text }, splitLine: { lineStyle: { color: TH.split } } },
+        yAxis: { type: 'category', data: cats, inverse: true, axisLabel: { color: TH.text, fontSize: 12 } },
+        series: [{ type: 'bar', data: cats.map(function(cat, i) {
+            return { value: vals[i], name: cat, itemStyle: { color: CAT_COLORS[cat] } };
+        }), label: { show: true, position: 'right', color: TH.text, fontSize: 12, fontWeight: 'bold',
+            formatter: function(p) { return p.value + ' stmts'; } } }]
     });
 }
 
@@ -341,10 +355,10 @@ function renderOrgHeatmap() {
         toolbox: _toolbox(),
         tooltip: Object.assign({ formatter: function(p) { return hm.orgTypes[p.data[1]] + ' / ' + hm.fields[p.data[0]] + ': ' + p.data[2] + '%'; } }, _tt()),
         grid: { left: 140, right: 80, top: 10, bottom: 180 },
-        xAxis: { type: 'category', data: hm.fields, axisLabel: { color: TH.text, fontSize: 9, rotate: 55 }, axisLine: { lineStyle: { color: TH.axis } } },
+        xAxis: { type: 'category', data: hm.fields, axisLabel: { color: TH.text, fontSize: 11, rotate: 55 }, axisLine: { lineStyle: { color: TH.axis } } },
         yAxis: { type: 'category', data: hm.orgTypes, axisLabel: { color: TH.text, fontSize: 11 }, axisLine: { lineStyle: { color: TH.axis } } },
         visualMap: { min: 0, max: maxVal || 1, calculable: true, orient: 'horizontal', left: 'center', bottom: 0,
-            inRange: { color: ['#1e293b', '#312e81', '#6366f1', '#10b981', '#f59e0b'] }, textStyle: { color: TH.text } },
+            inRange: { color: ['#2d3748', '#312e81', '#6366f1', '#10b981', '#f59e0b'] }, textStyle: { color: TH.text } },
         series: [{ type: 'heatmap', data: data, label: { show: false } }]
     });
 }
@@ -360,7 +374,9 @@ function renderDrilldownTable() {
     stmts.forEach(function(s) {
         var cls = s.cgi >= 20 ? 'cgi-high' : s.cgi >= 10 ? 'cgi-mid' : 'cgi-low';
         rows.push('<tr data-key="' + s.key + '" style="cursor:pointer;">');
-        rows.push('<td>' + s.key + '</td><td>' + (s.title || '').substring(0, 70) + '</td>');
+        var fullTitle = escHtml(s.title || '');
+        var shortTitle = fullTitle.length > 70 ? fullTitle.substring(0, 67) + '...' : fullTitle;
+        rows.push('<td>' + s.key + '</td><td title="' + fullTitle + '">' + shortTitle + '</td>');
         rows.push('<td>' + s.year + '</td><td>' + (s.orgType || '') + '</td><td>' + (s.region || '') + '</td>');
         rows.push('<td><span class="cgi-badge ' + cls + '">' + s.cgi.toFixed(1) + '</span></td></tr>');
     });
@@ -381,6 +397,7 @@ function renderDrilldownTable() {
 function renderStmtDetail(stmt) {
     var panel = document.getElementById('stmt-detail');
     panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     // Add close button if not already present
     if (!panel.querySelector('.detail-close')) {
         var closeBtn = document.createElement('button');
@@ -397,31 +414,57 @@ function renderStmtDetail(stmt) {
     var fields = DASH.fieldOrder;
     var labels = fields.map(function(f) { return DASH.fieldLabels[f]; });
     var vals = fields.map(function(f) { return stmt.scores[f] || 0; });
+    var catLookup = {};
+    for (var cat in DASH.categoryMap) {
+        DASH.categoryMap[cat].forEach(function(lbl) { catLookup[lbl] = cat; });
+    }
+    var sortedIdx = labels.map(function(l, i) { return { label: l, val: vals[i], idx: i }; })
+        .sort(function(a, b) { return a.val - b.val; });
     c.setOption({
         toolbox: _toolbox(),
-        tooltip: _tt(),
-        radar: {
-            indicator: labels.map(function(l) { return { name: l, max: 100 }; }),
-            axisName: { color: TH.text, fontSize: 9 },
-            splitArea: { areaStyle: { color: ['rgba(99,102,241,0.03)', 'rgba(99,102,241,0.06)'] } },
-            splitLine: { lineStyle: { color: TH.split } },
-            axisLine: { lineStyle: { color: TH.axis } }
-        },
-        series: [{ type: 'radar', data: [{ value: vals, name: stmt.key,
-            areaStyle: { color: 'rgba(99,102,241,0.25)' },
-            lineStyle: { color: '#6366f1', width: 2 }, itemStyle: { color: '#6366f1' }
-        }] }]
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, _tt()),
+        grid: { left: 200, right: 50, top: 10, bottom: 20 },
+        xAxis: { type: 'value', max: 100, axisLabel: { color: TH.text }, splitLine: { lineStyle: { color: TH.split } } },
+        yAxis: { type: 'category', data: sortedIdx.map(function(s) { return s.label; }), axisLabel: { color: TH.text, fontSize: 10 } },
+        series: [{ type: 'bar', data: sortedIdx.map(function(s) {
+            var clr = CAT_COLORS[catLookup[s.label]] || '#6366f1';
+            return { value: s.val, itemStyle: { color: clr } };
+        }), label: { show: true, position: 'right', color: TH.text, fontSize: 9,
+            formatter: function(p) { return p.value > 0 ? p.value : ''; } } }]
     });
 }
 
 // ================================================================
 // TAB 6: CROSS-SYSTEM
 // ================================================================
+var LASSO_LABELS = {
+    'fp_hr_childrens_rights': "Children's Rights (HR)",
+    'fp_sc_intergenerational_equity': 'Intergenerational Equity (SC)',
+    'ont_sp_economic_position': 'Economic Position (SP)',
+    'ont_nc_safety': 'Safety (NC)',
+    'ont_sp_sovereignty': 'Sovereignty (SP)',
+    'fp_pd_definitions_provided': 'Definitions Provided (PD)',
+    'fp_ph_vulnerability_protection': 'Vulnerability Protection (PH)',
+    'fp_hr_disability_rights': 'Disability Rights (HR)',
+    'fp_gp_sanctions_export_controls': 'Sanctions/Export Controls (GP)',
+    'fp_vt_communitarian_framing': 'Communitarian Framing (VT)',
+    'fp_ph_intergenerational_ethics': 'Intergenerational Ethics (PH)',
+    'fp_ga_extraterritorial_application': 'Extraterritorial Application (GA)',
+    'fp_hr_minority_rights': 'Minority Rights (HR)',
+    'fp_ae_environmental_sustainability': 'Environmental Sustainability (AE)',
+    'ont_gm_enforcement': 'Enforcement (GM)',
+    'gn_expanded_vulnerability': 'Expanded Vulnerability (GN)',
+    'fp_ev_environmental_justice': 'Environmental Justice (EV)',
+    'fp_gi_human_security': 'Human Security (GI)',
+    'fp_gi_data_colonialism': 'Data Colonialism (GI)',
+    'fp_sf_criminal_justice': 'Criminal Justice (SF)'
+};
+
 function renderLasso() {
     var c = mkChart('chart-lasso');
     if (!c || !DASH.crossSystem) return;
     var cs = DASH.crossSystem;
-    var feats = cs.lassoFeatures.slice().reverse();
+    var feats = cs.lassoFeatures.slice().reverse().map(function(f) { return LASSO_LABELS[f] || f.replace(/_/g, ' '); });
     var coefs = cs.lassoCoefs.slice().reverse();
     c.setOption({
         toolbox: _toolbox(),
@@ -493,13 +536,17 @@ function renderDiscordTable() {
     var tbl = document.getElementById('discord-table');
     var rows = ['<thead><tr><th>Type</th><th>Key</th><th>Title</th><th>fp Score</th><th>CGI</th></tr></thead><tbody>'];
     cs.blindSpots.slice(0, 10).forEach(function(s) {
+        var ft = escHtml(s.title || '');
+        var st = ft.length > 50 ? ft.substring(0, 47) + '...' : ft;
         rows.push('<tr><td><span class="status-badge status-yellow">Blind Spot</span></td>');
-        rows.push('<td>' + s.key + '</td><td>' + (s.title || '').substring(0, 50) + '</td>');
+        rows.push('<td>' + s.key + '</td><td title="' + ft + '">' + st + '</td>');
         rows.push('<td>' + s.fpScore + '</td><td>' + s.cgi.toFixed(1) + '</td></tr>');
     });
     cs.reverseGaps.slice(0, 10).forEach(function(s) {
+        var ft = escHtml(s.title || '');
+        var st = ft.length > 50 ? ft.substring(0, 47) + '...' : ft;
         rows.push('<tr><td><span class="status-badge status-red">Reverse Gap</span></td>');
-        rows.push('<td>' + s.key + '</td><td>' + (s.title || '').substring(0, 50) + '</td>');
+        rows.push('<td>' + s.key + '</td><td title="' + ft + '">' + st + '</td>');
         rows.push('<td>' + s.fpScore + '</td><td>' + s.cgi.toFixed(1) + '</td></tr>');
     });
     rows.push('</tbody>');
@@ -694,7 +741,7 @@ function renderDevHeatmap() {
         yAxis: { type: 'category', data: dh.dims, inverse: true,
             axisLabel: { color: TH.text, fontSize: 10 }, axisLine: { lineStyle: { color: TH.axis } } },
         visualMap: { min: 0, max: maxVal || 1, calculable: true, orient: 'horizontal', left: 'center', bottom: 0,
-            inRange: { color: ['#1e293b', '#312e81', '#6366f1', '#10b981', '#f59e0b'] }, textStyle: { color: TH.text } },
+            inRange: { color: ['#2d3748', '#312e81', '#6366f1', '#10b981', '#f59e0b'] }, textStyle: { color: TH.text } },
         series: [{ type: 'heatmap', data: data,
             label: { show: true, color: '#fff', fontSize: 9,
                 formatter: function(p) { return p.data[2] > 0 ? p.data[2].toFixed(0) : ''; } } }]
@@ -770,7 +817,8 @@ function renderLatency() {
             { type: 'line', data: [[minYear, minYear], [maxYear, maxYear]],
               lineStyle: { color: '#475569', type: 'dashed', width: 1 }, symbol: 'none', silent: true },
             { type: 'scatter', data: scatterData, symbolSize: 14,
-              itemStyle: { color: function(p) { return colors[p.dataIndex]; } } }
+              itemStyle: { color: function(p) { return colors[p.dataIndex]; } },
+              label: { show: true, formatter: function(p) { return tooltips[p.dataIndex]; }, position: 'top', color: TH.text, fontSize: 9 } }
         ]
     });
 }
@@ -825,7 +873,7 @@ function renderDimGapRank() {
 // ================================================================
 // EXPERT INTERPRETATIONS
 // ================================================================
-var _interpVisible = true;
+var _interpVisible = false;
 
 function renderTabInterpretation(tabKey) {
     if (typeof INTERPRETATIONS === 'undefined') return;
@@ -905,7 +953,6 @@ function renderInterpretationsForTab(tabKey) {
 var interpBtn = document.getElementById('interp-toggle');
 if (interpBtn) {
     interpBtn.addEventListener('click', function() { toggleInterpretations(); });
-    interpBtn.classList.add('active');
 }
 
 // ================================================================
@@ -924,7 +971,8 @@ function renderKPIs() {
         kpi(o.cgiMax.toFixed(1), 'Max CGI', 'out of 100 possible'),
         kpi(o.cgiAboveZero.toLocaleString(), 'CGI > 0', o.cgiAboveZeroPct + '% of corpus'),
         kpi(o.cgiMeanNonZero.toFixed(1), 'Mean CGI (non-zero)', 'across ' + o.cgiAboveZero + ' statements'),
-        kpi('9', 'Dashboard Tabs', '5 original + 4 new')
+        kpi('17:1', 'Mention:Enforcement', '503 mention, only 30 enforced'),
+        kpi('257:1', 'Geographic Inequality', 'N. America vs SE Asia density')
     ];
     grid.textContent = '';
     grid.insertAdjacentHTML('beforeend', cards.join(''));
@@ -973,8 +1021,14 @@ function switchTab(tabId) {
     document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
     var pane = document.getElementById('pane-' + tabId);
     if (pane) pane.classList.add('active');
-    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-    document.querySelector('[data-tab="' + tabId + '"]').classList.add('active');
+    if (pane) pane.focus();
+    document.querySelectorAll('.tab-btn').forEach(function(b) {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+    });
+    var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+    activeBtn.classList.add('active');
+    activeBtn.setAttribute('aria-selected', 'true');
     if (!_tabInited[tabId]) {
         _tabInited[tabId] = true;
         initTab(tabId);

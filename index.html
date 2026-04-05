@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Children &amp; AI Governance v2 &mdash; Dashboard</title>
+    <title>Children &amp; AI Governance v3 &mdash; Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,14 +11,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to content</a>
 
 <header class="header">
     <div style="display:flex;align-items:baseline;gap:8px;">
-        <h1>Children &amp; Adolescents in AI Governance v2</h1>
+        <h1>Children &amp; Adolescents in AI Governance v3</h1>
         <span class="header-subtitle">3,044 statements &middot; 20 dimensions &middot; 9 tabs</span>
     </div>
     <button class="theme-toggle" id="theme-toggle" title="Toggle theme">&#9790;</button>
-    <button class="interp-toggle-global" id="interp-toggle" title="Toggle expert interpretations">Expert Commentary</button>
+    <button class="interp-toggle-global" id="interp-toggle" title="Toggle expert interpretations">Show Expert Analysis</button>
 </header>
 
 <nav class="tab-nav" role="tablist" aria-label="Dashboard tabs">
@@ -33,11 +34,10 @@
     <button class="tab-btn" data-tab="riskgov" role="tab" aria-selected="false" aria-controls="pane-riskgov" id="tab-riskgov">Risk-Governance</button>
 </nav>
 
-<div class="kpi-grid" id="kpi-grid"></div>
-
-<main>
+<main id="main-content">
     <!-- TAB 1: OVERVIEW -->
-    <section class="tab-pane active" id="pane-overview" role="tabpanel" aria-labelledby="tab-overview">
+    <section class="tab-pane active" id="pane-overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="-1">
+        <div class="kpi-grid" id="kpi-grid"></div>
         <div class="tab-interpretation" id="tab-interp-overview"></div>
         <div class="headline-banner" id="headline-banner"></div>
         <div class="chart-grid-2">
@@ -72,7 +72,7 @@
     </section>
 
     <!-- TAB 2: DIMENSIONS -->
-    <section class="tab-pane" id="pane-dimensions" role="tabpanel" aria-labelledby="tab-dimensions">
+    <section class="tab-pane" id="pane-dimensions" role="tabpanel" aria-labelledby="tab-dimensions" tabindex="-1">
         <div class="tab-interpretation" id="tab-interp-dimensions"></div>
         <div class="chart-full">
             <div class="chart-card">
@@ -93,7 +93,7 @@
     </section>
 
     <!-- TAB 3: GAP ANALYSIS -->
-    <section class="tab-pane" id="pane-gaps" role="tabpanel" aria-labelledby="tab-gaps">
+    <section class="tab-pane" id="pane-gaps" role="tabpanel" aria-labelledby="tab-gaps" tabindex="-1">
         <div class="tab-interpretation" id="tab-interp-gaps"></div>
         <div class="chart-grid-2">
             <div class="chart-card">
@@ -126,7 +126,7 @@
     </section>
 
     <!-- TAB 4: COMPARATIVE -->
-    <section class="tab-pane" id="pane-comparative" role="tabpanel" aria-labelledby="tab-comparative">
+    <section class="tab-pane" id="pane-comparative" role="tabpanel" aria-labelledby="tab-comparative" tabindex="-1">
         <div class="tab-interpretation" id="tab-interp-comparative"></div>
         <div class="chart-grid-2">
             <div class="chart-card">
@@ -161,13 +161,14 @@
     </section>
 
     <!-- TAB 5: DRILL-DOWN -->
-    <section class="tab-pane" id="pane-drilldown" role="tabpanel" aria-labelledby="tab-drilldown">
+    <section class="tab-pane" id="pane-drilldown" role="tabpanel" aria-labelledby="tab-drilldown" tabindex="-1">
         <div class="tab-interpretation" id="tab-interp-drilldown"></div>
         <div class="chart-card" style="margin-top:16px;">
             <h3>Statement Explorer</h3>
-            <div class="chart-subtitle">Top 200 statements by CGI. Click a row to see dimension breakdown.</div>
+            <div class="chart-subtitle">Top 200 statements by CGI. Click any row to see the full 20-dimension breakdown.</div>
             <div style="margin:12px 0;">
                 <input type="text" id="stmt-search" placeholder="Search by title or key..."
+                       aria-label="Search statements by title, key, or organization"
                        style="width:100%;padding:8px 12px;background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;font-size:0.82rem;">
             </div>
             <table class="stmt-table" id="drilldown-table"></table>
@@ -180,7 +181,7 @@
     </section>
 
     <!-- TAB 6: CROSS-SYSTEM -->
-    <section class="tab-pane" id="pane-crosssystem" role="tabpanel" aria-labelledby="tab-crosssystem">
+    <section class="tab-pane" id="pane-crosssystem" role="tabpanel" aria-labelledby="tab-crosssystem" tabindex="-1">
         <div class="tab-interpretation" id="tab-interp-crosssystem"></div>
         <div class="chart-grid-2">
             <div class="chart-card">
@@ -215,7 +216,7 @@
     </section>
 
     <!-- TAB 7: VALIDATION -->
-    <section class="tab-pane" id="pane-validation" role="tabpanel" aria-labelledby="tab-validation">
+    <section class="tab-pane" id="pane-validation" role="tabpanel" aria-labelledby="tab-validation" tabindex="-1">
         <div class="tab-interpretation" id="tab-interp-validation"></div>
         <div class="chart-grid-2">
             <div class="chart-card">
@@ -248,7 +249,7 @@
     </section>
 
     <!-- TAB 8: AGE-STAGE -->
-    <section class="tab-pane" id="pane-agestage" role="tabpanel" aria-labelledby="tab-agestage">
+    <section class="tab-pane" id="pane-agestage" role="tabpanel" aria-labelledby="tab-agestage" tabindex="-1">
         <div class="tab-interpretation" id="tab-interp-agestage"></div>
         <div class="chart-grid-2">
             <div class="chart-card">
@@ -283,7 +284,7 @@
     </section>
 
     <!-- TAB 9: RISK-GOVERNANCE -->
-    <section class="tab-pane" id="pane-riskgov" role="tabpanel" aria-labelledby="tab-riskgov">
+    <section class="tab-pane" id="pane-riskgov" role="tabpanel" aria-labelledby="tab-riskgov" tabindex="-1">
         <div class="tab-interpretation" id="tab-interp-riskgov"></div>
         <div class="chart-grid-2">
             <div class="chart-card">
@@ -321,5 +322,8 @@
 <script src="data.js"></script>
 <script src="interpretations.js"></script>
 <script src="app.js"></script>
+<footer class="provenance-footer" style="padding:12px 24px;font-size:0.7rem;color:var(--text-muted);border-top:1px solid var(--border);text-align:center;">
+    Children &amp; AI Governance Dashboard v3 &mdash; Generated 2026-04-05 &mdash; Expert perspectives are synthesized from domain literature and do not represent named individuals.
+</footer>
 </body>
 </html>

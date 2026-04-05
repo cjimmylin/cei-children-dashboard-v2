@@ -1346,13 +1346,6 @@ const DASH = {
         "cgiMean": 7.6,
         "cgiMax": 33.0
       },
-      "Americas": {
-        "total": 4,
-        "cgiAboveZero": 4,
-        "cgiAboveZeroPct": 100.0,
-        "cgiMean": 2.0,
-        "cgiMax": 6.5
-      },
       "Asia": {
         "total": 174,
         "cgiAboveZero": 126,
@@ -1396,9 +1389,9 @@ const DASH = {
         "cgiMax": 64.5
       },
       "Latin America": {
-        "total": 159,
-        "cgiAboveZero": 69,
-        "cgiAboveZeroPct": 43.4,
+        "total": 163,
+        "cgiAboveZero": 73,
+        "cgiAboveZeroPct": 44.8,
         "cgiMean": 1.9,
         "cgiMax": 23.0
       },
@@ -1868,7 +1861,6 @@ const DASH = {
     "regionDimHeatmap": {
       "regions": [
         "Africa",
-        "Americas",
         "Asia",
         "Asia-Pacific",
         "Central Asia",
@@ -1926,28 +1918,6 @@ const DASH = {
           24.3,
           10.3,
           2.8
-        ],
-        [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          25.0,
-          0.0,
-          0.0,
-          0.0,
-          25.0,
-          25.0,
-          0.0,
-          0.0
         ],
         [
           17.8,
@@ -2082,24 +2052,24 @@ const DASH = {
           4.6
         ],
         [
-          13.2,
-          1.3,
-          5.0,
-          6.3,
-          3.8,
+          12.9,
+          1.2,
+          4.9,
+          6.1,
+          3.7,
           0.0,
           2.5,
-          6.3,
-          5.7,
-          1.9,
-          1.3,
-          1.9,
-          0.0,
+          6.1,
+          5.5,
+          1.8,
+          1.2,
+          1.8,
           0.6,
           0.6,
           0.6,
-          7.5,
-          3.8,
+          0.6,
+          8.0,
+          4.3,
           0.6,
           0.0
         ],
